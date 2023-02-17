@@ -5,11 +5,10 @@ import os
 
 # Flask
 from flask import Flask, jsonify, request
-from flask_jwt_extended import create_access_token, JWTManager
-from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import create_access_token, JWTManager, get_jwt_identity, jwt_required
 
 # Models
-from .models import User
+from .models import User, Route
 from .models import db
 
 def create_app():
@@ -21,8 +20,9 @@ def create_app():
 
     @app.route('/')
     def hello_world():
-        return 'Hello, World!'
+        return f'Hello, World!'
     
+        
     @app.route('/login', methods=['POST'])
     def login():
         username = request.json.get('username', None)
@@ -46,21 +46,18 @@ def create_app():
         username = request.json.get('username')
         password = request.json.get('password')
 
-        # Comprobamos que los datos estén completos
         if not all([full_name, username, password]):
             return jsonify({'msg': 'Please provide all required fields'}), 400
 
-        # Comprobamos que el usuario no exista
         if User.query.filter_by(username=username).first():
             return jsonify({'msg': 'Username already exists'}), 409
 
-        # Creamos el nuevo usuario
         new_user = User(full_name=full_name, username=username, password=generate_password_hash(password))
 
-        # Guardamos el usuario en la base de datos
         db.session.add(new_user)
         db.session.commit()
 
         return jsonify({'msg': 'User created successfully'}), 201
+
 
     return app
