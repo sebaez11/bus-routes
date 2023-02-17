@@ -4,11 +4,12 @@ import datetime
 import os
 
 # Flask
-from flask import Flask, jsonify, request
 from flask_jwt_extended import create_access_token, JWTManager, get_jwt_identity, jwt_required
+from sqlalchemy.orm import joinedload
+from flask import Flask, jsonify, request
 
 # Models
-from .models import User, Route
+from .models import User, Route, Location
 from .models import db
 
 def create_app():
@@ -22,6 +23,36 @@ def create_app():
     def hello_world():
         return f'Hello, World!'
     
+        
+    @app.route('/routes-filtered')
+    def get_filtered_routes():
+        hour_arg = request.args.get('hour')
+        hour = datetime.datetime.strptime(hour_arg, '%H:%M:%S').time()
+
+        routes = Route.query.all()
+        min_hour = None
+        final_route = None
+
+        for route in routes:
+            if route.hour >= hour:
+                if min_hour is None or min_hour >= route.hour:
+                    min_hour = route.hour
+                    final_route = route
+
+        final_routes = Route.query.filter_by(hour=final_route.hour).all()
+
+        response = [
+            {
+                "bus": r.bus,
+                "hour": r.hour.strftime('%H:%M:%S'),
+                "name": r.location.name,
+                "latitude": r.location.latitude,
+                "longitude": r.location.longitude,
+            } for r in final_routes
+        ]
+
+        return jsonify(response)
+
         
     @app.route('/login', methods=['POST'])
     def login():
