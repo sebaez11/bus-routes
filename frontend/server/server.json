@@ -1,0 +1,49 @@
+{
+    "bus_stops": [
+        {
+            "location": {
+                "name": "Baker Street",
+                "latitude": 4.138268,
+                "longitude": -73.626186
+            },
+            "bus": { 
+                "name": "HMT 267",
+                "hour": "3123981723"
+            }
+        },
+        {
+            "location": {
+                "name": "York street",
+                "latitude": 4.148268,
+                "longitude": -73.636186
+            },
+            "bus": { 
+                "name": "KJD 267",
+                "hour": "3123981723"
+            }
+        },
+        {
+            "location": {
+                "name": "Metropolitan",
+                "latitude": 4.128268,
+                "longitude": -73.636186
+            },
+            "bus": { 
+                "name": "NBU 432",
+                "hour": "3123981723"
+            }
+        },
+        {
+            "location": {
+                "name": "Metropolitan",
+                "latitude": 4.121268,
+                "longitude": -73.631186
+            },
+            "bus": { 
+                "name": "NBU 432",
+                "hour": "3123981723"
+            }
+        }
+
+    ]
+}
