@@ -29,11 +29,3 @@ class Route(db.Model):
 
     def __repr__(self):
         return f'<Route {self.bus} - {self.hour} - {self.location.name}>'
-    
-    def serialize(self):
-        return {
-            'id': self.id,
-            'location': self.location,
-            'time': self.time.strftime('%H:%M:%S')
-        }
-    

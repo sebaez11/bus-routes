@@ -8,12 +8,28 @@ from .models import db
 # Flask
 from flask import Flask, jsonify, request
 from flask_jwt_extended import jwt_required
+from sqlalchemy.orm import joinedload
 from flask.views import MethodView
 
 
 
 class RouteView(MethodView):
         
+        @jwt_required()
+        def get(self):
+            routes = Route.query.options(joinedload(Route.location)).all()
+            data = []
+            for route in routes:
+                route_data = {
+                    "bus": route.bus,
+                    "hour": route.hour.strftime("%H:%M:%S"),
+                    "location_name": route.location.name,
+                    "location_latitude": route.location.latitude,
+                    "location_longitude": route.location.longitude
+                }
+                data.append(route_data)
+            return jsonify(data), 200
+
         @jwt_required()
         def post(self):
             data = request.get_json()
