@@ -9,7 +9,7 @@ export interface IBusStop {
     hour:           string;
     id:             string;
     latitude:       number;
-    longitude:      number;
+    longitude:      string;
     namebus:        string;
     station:        string;
     updated:        Date;
@@ -30,9 +30,9 @@ const MapView = ( { locations }: { locations: IBusStop[] } ) => {
 			/>
 
 			{locations.map(( location , index) => (
-				<Marker position={[location?.latitude, location?.longitude]} key={index}>
+				<Marker position={[location?.latitude, Number(location?.longitude)]} key={index}>
 					<Popup>
-						{ 'Paradero: ' + location?.station } <br /> { 'Bus: ' + location?.namebus + ' '} <br /> { 'Hora: ' + location?.hour }
+						{ 'Paradero: ' + location?.station } <br /> { 'Bus: ' + location?.namebus + ' '} <br /> { 'Hora de salida: ' + location?.hour }
 					</Popup>
 				</Marker>
 			))}

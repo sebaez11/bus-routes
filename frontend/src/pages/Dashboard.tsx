@@ -30,7 +30,7 @@ const Dashboard = () => {
 	useEffect(() => {
 		if (data) {
 			setRoutes(data.items);
-			handleSearch(data);
+			// handleSearch(data);
 		}
 	}, [data]);
 

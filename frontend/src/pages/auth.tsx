@@ -83,6 +83,8 @@ const SignInSide = () => {
 						<Typography component="h1" variant="h5">
 							Iniciar sesión
 						</Typography>
+						<span style={{ color: 'gray' }}>Usuario: admin@admin.com</span>
+						<span style={{ color: 'gray' }}>Password: 1234567890</span>
 						<Box
 							component="form"
 							noValidate
