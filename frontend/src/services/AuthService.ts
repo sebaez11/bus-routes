@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { constants } from '../constants/constanst';
-import { IAuth } from '../interfaces';
+import { ILogin, IAuth } from '../interfaces';
 
 export const authApi = createApi({
 
@@ -12,9 +12,9 @@ export const authApi = createApi({
     
     endpoints: (builder) => ({
 
-        login: builder.mutation<IAuth, IAuth>({
+        login: builder.mutation<IAuth, ILogin>({
             query: (body) => ({
-                url: '/login',
+                url: '/admins/auth-with-password',
                 method: 'POST',
                 body
             })

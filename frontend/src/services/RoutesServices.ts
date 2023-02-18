@@ -9,9 +9,9 @@ export const routesApi = createApi({
     baseQuery: fetchBaseQuery({ 
         baseUrl: constants.API_URL,
         prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).auth.token;
-            if (token) {
-                headers.set('authorization', `Beasrer ${token}`);
+            const access_token = (getState() as RootState).auth.token;
+            if (access_token) {
+                headers.set('authorization', `Bearer ${access_token}`);
             }
             return headers;
         }, 
@@ -23,8 +23,15 @@ export const routesApi = createApi({
             query: () => 'bus_stops',
         }),
 
+        getAllRoutes: builder.query<any, any>({
+            query: () => 'collections/routes/records',
+        }),
+
     }),
 
 });
 
-export const { useGetRoutesQuery } = routesApi;
+export const { 
+    useGetRoutesQuery,
+    useGetAllRoutesQuery,
+ } = routesApi;

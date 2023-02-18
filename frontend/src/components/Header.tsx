@@ -14,12 +14,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 
+import { useAppSelector, useAppDispatch } from '../hooks/redux';
+
 import logo_unillanos from '../assets/images/logo_unillanos.png';
 
-const pages = ['Paraderos', 'Rutas', 'Información', 'Contacto'];
+const pages = ['Inicio', 'Administración', 'Información', 'Contacto'];
 const settings = ['My Account', 'Logout'];
 
 function ResponsiveAppBar() {
+
+	const { isAuthenticated } = useAppSelector(state => state.auth);
+	const dispatch = useAppDispatch();
+
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -38,8 +44,13 @@ function ResponsiveAppBar() {
 		setAnchorElUser(null);
 	};
 
+	const handleLogout = () => {
+		dispatch({ type: 'auth/logout' });
+	};
+
+
 	return (
-		<AppBar style={{ background: '#222f3e' }}>
+		<AppBar style={{ background: '#222f3e' }} position="fixed">
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
 					<Box style={{ display: 'flex', alignItems: 'center' }}>
@@ -58,7 +69,7 @@ function ResponsiveAppBar() {
 								fontFamily: 'monospace',
 								fontWeight: 700,
 								letterSpacing: '.1rem',
-								color: 'inherit',
+								color: 'white',
 								textDecoration: 'none',
 							}}
 						>
@@ -125,61 +136,98 @@ function ResponsiveAppBar() {
 					
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
 						{pages.map((page) => (
-							<Button
-								key={page}
-								color="inherit"
-								component={Link}
-								to={page === 'Home' ? '/' : page}
-								sx={{
-									fontFamily: 'monospace',
-									fontWeight: 700,
-									letterSpacing: '.1rem',
-									color: 'inherit',
-									textDecoration: 'none',
-								}}
-							>
-								{page}
-							</Button>
+							(page === 'Administración') ? (
+								isAuthenticated && <Button
+									key={page}
+									color='error'
+									component={Link}
+									to={page.toLowerCase()}
+									sx={{ mr: 2 }}
+								>
+									{page}
+								</Button>
+							) : (
+								<Button
+									key={page}
+									color="inherit"
+									component={Link}
+									to={`/${page.toLowerCase()}`}
+									sx={{ 
+										mr: 2,
+										color: 'white',
+										'&:hover': {
+											color: 'success.main',
+										}
+									}}
+								>
+									{page}
+								</Button>
+								)
+							)
+						)}
 
-							// <Button
-							// key={page}
-							// onClick={handleCloseNavMenu}
-							// sx={{ my: 2, color: 'white', display: 'block' }}
-							// >
-							// {page}
-							// </Button>
-
-						))}
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="avatar" src="https://i.pravatar.cc/200" />
-							</IconButton>
-						</Tooltip>
-						<Menu
-							sx={{ mt: '45px' }}
-							id="menu-appbar"
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
-						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography textAlign="center">{setting}</Typography>
-								</MenuItem>
-							))}
-						</Menu>
+
+						{
+							isAuthenticated ? (
+								<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+									<Tooltip title="Open settings">
+										<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+											<Avatar alt="avatar" src="https://i.pravatar.cc/200" />
+										</IconButton>
+									</Tooltip>
+									<Menu
+										sx={{ mt: '45px' }}
+										id="menu-appbar"
+										anchorEl={anchorElUser}
+										anchorOrigin={{
+											vertical: 'top',
+											horizontal: 'right',
+										}}
+										keepMounted
+										transformOrigin={{
+											vertical: 'top',
+											horizontal: 'right',
+										}}
+										open={Boolean(anchorElUser)}
+										onClose={handleCloseUserMenu}
+									>
+										{settings.map((setting) => (
+											setting === 'Logout' ? (
+												<MenuItem key={setting} onClick={handleLogout}>
+													<Typography textAlign="center">{setting}</Typography>
+												</MenuItem>
+											) : (
+												<MenuItem key={setting} onClick={handleCloseUserMenu}>
+													<Typography textAlign="center">{setting}</Typography>
+												</MenuItem>
+											)
+										))}
+									</Menu>
+								</Box> ) 
+								: 
+								(
+									<Button
+									variant="contained"
+									color="success"
+									component={Link}
+									to="/auth"
+									sx={{
+										fontFamily: 'monospace',
+										fontWeight: 700,
+										letterSpacing: '.1rem',
+										color: 'inherit',
+										textDecoration: 'none',
+									}}
+								>
+									Login
+								</Button>
+								)
+						}
+						
+
 					</Box>
 				</Toolbar>
 			</Container>

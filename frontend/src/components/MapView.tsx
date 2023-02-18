@@ -1,9 +1,22 @@
 import React from 'react';
 import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
-import { IBusStop } from '../interfaces';
 import 'leaflet/dist/leaflet.css';
 
+export interface IBusStop {
+    collectionId:   string;
+    collectionName: string;
+    created:        Date;
+    hour:           string;
+    id:             string;
+    latitude:       number;
+    longitude:      number;
+    namebus:        string;
+    station:        string;
+    updated:        Date;
+}
+
 const MapView = ( { locations }: { locations: IBusStop[] } ) => {
+
 	return (
 		<MapContainer
 			center={[4.138268, -73.626186]}
@@ -16,10 +29,10 @@ const MapView = ( { locations }: { locations: IBusStop[] } ) => {
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 			/>
 
-			{locations.map(({ location, bus }, index) => (
-				<Marker position={[location.latitude, location.longitude]} key={index}>
+			{locations.map(( location , index) => (
+				<Marker position={[location?.latitude, location?.longitude]} key={index}>
 					<Popup>
-						{ 'Paradero: ' + location.name } <br /> { 'Bus: ' + bus.name + ' '} <br /> { 'Hora: ' + bus.hour }
+						{ 'Paradero: ' + location?.station } <br /> { 'Bus: ' + location?.namebus + ' '} <br /> { 'Hora: ' + location?.hour }
 					</Popup>
 				</Marker>
 			))}
