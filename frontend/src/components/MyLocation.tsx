@@ -16,7 +16,6 @@ const MyLocation = () => {
 		const latitude = position.coords.latitude;
 		const longitude = position.coords.longitude;
 		setLocation([latitude, longitude]);
-		console.log(latitude, longitude);
 	};
 
 	const errorCallback = (error: any) => {
@@ -32,28 +31,31 @@ const MyLocation = () => {
 	};
 
 	useEffect(() => {
-		getLocation();
+		// getLocation();
 	}, []);
 
 	return (
 		<Box>
 			<Card
 				sx={{
-					minWidth: 375,
+					minWidth: 275,
 					display: 'flex',
 					flexDirection: 'row',
-					justifyContent: 'space-between',
+					justifyContent: 'center',
+					alignItems: 'center',
+					borderRadius: 5,
+					boxShadow: 5,
 				}}
 			>
 				<CardContent>
-					<h2>My location</h2>
+					<h2>Mi ubicación</h2>
 					<Box sx={{ display: 'flex', flexDirection: 'column' }}>
 						<span>Latitude: {location[0]}</span>
 						<span>Longitude: {location[1]}</span>
 					</Box>
 				</CardContent>
 				<CardActions>
-					<Button onClick={getLocation} variant="contained">Get location</Button> 
+					<Button onClick={getLocation} variant="contained">Obtener ahora</Button>
 				</CardActions>
 			</Card>
 		</Box>

@@ -1,27 +1,39 @@
-import { useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useState, useEffect } from 'react';
 import { 
 	Box, 
 	Grid,
-	TextField,
 } from '@mui/material';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
 
 import Header from '../components/Header';
 import MapView from '../components/MapView';
 import MyLocation from '../components/MyLocation';
-import { useGetRoutesQuery } from '../services/RoutesServices';
+import SearchRoute from '../components/SearchRoute';
+import { useGetAllRoutesQuery } from '../services/RoutesServices';
+import { filterByTimeInterval } from '../helpers/filters';
 
 const Dashboard = () => {
-	const [value, setValue] = useState<Dayjs | null>(dayjs());
 
-	const handleChange = (newValue: Dayjs | null) => {
-		setValue(newValue);
+	const [hour, setHour] = useState<string>( dayjs().hour() + ':' + dayjs().minute() );
+	const [timeInterval, setTimeInterval] = useState<number>(60);
+	
+	const [routes, setRoutes] = useState<any>([]);
+	const [filteredRoutes, setFilteredRoutes] = useState<any>([]);
+
+	const { data, isLoading, isError, error } = useGetAllRoutesQuery({});
+		
+	const handleSearch = (data: any) => {
+		const filteredRoutes = filterByTimeInterval(routes, hour, timeInterval);
+		setFilteredRoutes(filteredRoutes);
 	};
 
-	const { data, isLoading, error } = useGetRoutesQuery({});
+	useEffect(() => {
+		if (data) {
+			setRoutes(data.items);
+			handleSearch(data);
+		}
+	}, [data]);
+
 
 	return (
 		<Box>
@@ -29,27 +41,18 @@ const Dashboard = () => {
 			<Grid container mt={8}>
 				<Grid item xs={12} sx={{ height: '25vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 					<Grid item xs={12} sm={6} md={3}>
-						<Box>
-							<LocalizationProvider dateAdapter={AdapterDayjs}>
-								<TimePicker
-									label="Time"
-									value={value}
-									onChange={handleChange}
-									renderInput={(params) => <TextField {...params} />}
-								/>
-							</LocalizationProvider>
-						</Box>
+						<SearchRoute date={hour} setHour={setHour} timeInterval={timeInterval} setTimeInterval={setTimeInterval} handleSearch={handleSearch} />
 					</Grid>
 					<Grid item xs={12} sm={6} md={3} >
 						<MyLocation />
 					</Grid>
 				</Grid>
-				<Grid item xs={12}>
-					<Box sx={{ height: '65vh' }}>
-						{isLoading ? (
+				<Grid item xs={12} boxShadow={10} borderRadius={5}>
+					<Box sx={{ height: '65vh' }} >
+						{(isLoading) ? (
 							<h1>Loading...</h1>
 						) : (
-							<MapView locations={data} />
+							<MapView locations={filteredRoutes} />
 						)}
 					</Box>
 				</Grid>

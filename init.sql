@@ -1,1 +1,0 @@
-INSERT INTO public.user(full_name, username, password) values('Admin Unillanos', 'admin', 'pbkdf2:sha256:260000$S37SKiISB9e3nhls$921cc46c8dcb8370ec400ec47cb6302abe9ef82c3a5b467503e768e43f2014b0');
